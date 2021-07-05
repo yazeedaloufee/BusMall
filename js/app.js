@@ -7,9 +7,15 @@ let middleImgEl=document.getElementById("middleImg");
 let rightImgEl=document.getElementById("rightImg");
 let ulEl=document.getElementById("results");
 let products=[];
+let productLabels=[];
+let votesNumbers=[];
+let previousImages=[[-1,-1,-1]];
+
+
+let funcattempt=0;
 
 let attempt = 1;
-let maxAttempts = 10;
+let maxAttempts = 25;
 
 function Product(productName) {
     
@@ -25,25 +31,82 @@ let ProductImges=["bag.jpg","banana.jpg","bathroom.jpg","boots.jpg","breakfast.j
 
 for (let i = 0; i < ProductImges.length; i++) {
     new Product(ProductImges[i]);
+    productLabels[i]=products[i].pName;
+    
 }
 
 function randomIndex() {
-    return Math.floor(Math.random() * products.length);
+    return Math.floor(Math.random() * ProductImges.length);
 }
 
 let leftIndex ;
 let middleIndex;
 let rightIndex ;
+let index=0;
 
-function renderRandomImg() {
+//cheking if the index of any new image is similar to the previous iteration
+function checkIndex(imageIndexCheck,previousIndex)
+{
+    for(let x=0;x<3;x++){
+        
+        if(imageIndexCheck==previousImages[previousIndex][x]){
+           
+        return true;}
+        else {
+        continue;}
 
-     leftIndex = randomIndex();
+        
+    }
+return false;
+}
+function checkSameIrritation(){
+    // console.log('number of while times',funcattempt);
+    
+    leftIndex = randomIndex();
      middleIndex=randomIndex();
      rightIndex = randomIndex();
+      
      while (leftIndex === rightIndex ||leftIndex === middleIndex || middleIndex === rightIndex) {
         leftIndex = randomIndex();
         middleIndex=randomIndex();
+        rightIndex= randomIndex();
+        console.log('inside the while of first function',leftIndex,middleIndex,rightIndex);
+       
+
     }
+}
+
+function checkSameIrritation1(){
+    console.log("index is before comparison",index)
+
+    //cheking if the any index of any new image is similar to the previous iteration
+    console.log(leftIndex,middleIndex,rightIndex);
+        console.log("chking left index",checkIndex(leftIndex,index),leftIndex,previousImages[index]);
+        console.log("chking middle index",checkIndex(middleIndex,index),middleIndex,previousImages[index]);
+        console.log("chking right index",checkIndex(rightIndex,index),rightIndex,previousImages[index]);
+        console.log("chking if while should work",checkIndex(leftIndex,index)||checkIndex(middleIndex,index)||checkIndex(rightIndex,index));
+        console.log("index is before comparison",index)
+    while(checkIndex(leftIndex,index)||checkIndex(middleIndex,index)||checkIndex(rightIndex,index)){
+        console.log("while is working",leftIndex,middleIndex,rightIndex);
+        console.log("cheking the while inside the while",checkIndex(leftIndex,index)||checkIndex(middleIndex,index)||checkIndex(rightIndex,index));
+        checkSameIrritation();
+        console.log('inside the while',leftIndex,middleIndex,rightIndex);
+        funcattempt++;
+    
+
+    }
+
+}
+
+function renderRandomImg() {
+    checkSameIrritation();
+    checkSameIrritation1();
+    
+   
+    previousImages.push([leftIndex,middleIndex,rightIndex]);
+    
+    
+
 
     leftImgEl.setAttribute('src', products[leftIndex].img);
     middleImgEl.setAttribute('src', products[middleIndex].img);
@@ -62,7 +125,7 @@ function renderRandomImg() {
     products[middleIndex].views++;
     products[rightIndex].views++;
 
-
+    index++;
 }
 
 renderRandomImg();
@@ -72,6 +135,7 @@ middleImgEl.addEventListener('click', handelClicks);
 rightImgEl.addEventListener('click', handelClicks);
 let buttonEl=document.createElement("button")
 function handelClicks(event) {
+    console.log("index click",index);
     if (attempt <= maxAttempts) {
         let clickedImg = event.target.id;
         if (clickedImg === 'leftImg') {
@@ -87,7 +151,7 @@ function handelClicks(event) {
         
         
        
-    } else { ;
+    } else { 
             buttonEl.addEventListener("click",listEl);
             buttonEl.textContent='View results';
             containerEl.appendChild(buttonEl);
@@ -101,16 +165,67 @@ function handelClicks(event) {
     
     attempt++;
     
+    console.log(previousImages);
+   
+    
 }
-
+//table functions and list   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 function listEl(){
 let ulEl = document.getElementById('results');
         for (let i = 0; i < products.length; i++) {
             let liEl = document.createElement('li');
             liEl.textContent = `${products[i].pName} has ${products[i].votes} votes and ${products[i].views} views .`
             ulEl.appendChild(liEl);
+            
            
         }
-        buttonEl.removeEventListener("click",listEl);
+        
+        for (let i = 0; i < products.length; i++) {
+            votesNumbers[i]=products[i].votes;
 
+
+
+        }
+        var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: productLabels,
+        datasets: [{
+            label: '# of Votes',
+            data: votesNumbers,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+})
+buttonEl.removeEventListener("click",listEl);
 }
+
+
+
+//chart
+
+
