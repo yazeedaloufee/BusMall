@@ -2,3 +2,16 @@ img{
     width: 200px;
     hanging-punctuation: 200px;
 }
+canvas{
+    display: inline-block;
+    width: 600px;
+    height: 600px;
+    
+}
+main div:nth-of-type(2){
+    margin-top: 7%;
+    width: 600;
+    height: 100px;
+    
+
+}
