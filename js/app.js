@@ -15,7 +15,7 @@ let previousImages=[[-1,-1,-1]];
 let funcattempt=0;
 
 let attempt = 1;
-let maxAttempts = 25;
+let maxAttempts = 5;
 
 function Product(productName) {
     
@@ -101,6 +101,7 @@ function checkSameIrritation1(){
 function renderRandomImg() {
     checkSameIrritation();
     checkSameIrritation1();
+    readFromLocalStorage();
     
    
     previousImages.push([leftIndex,middleIndex,rightIndex]);
@@ -221,10 +222,30 @@ var myChart = new Chart(ctx, {
         }
     }
 })
+
+saveToLocalStorage();
 buttonEl.removeEventListener("click",listEl);
 }
 
+function saveToLocalStorage() {
+    let data = JSON.stringify(products);
+    localStorage.setItem('products', data);
 
+    
+}
+
+function readFromLocalStorage() {
+    let stringObj = localStorage.getItem('products');
+    // console.log(stringObj);
+    let normalObj = JSON.parse(stringObj);
+    
+    // console.log(normalObj);
+    if (normalObj !== null) {
+        products = normalObj;
+      
+    }
+    // console.log(Coffee.drinks);
+}
 
 //chart
 
